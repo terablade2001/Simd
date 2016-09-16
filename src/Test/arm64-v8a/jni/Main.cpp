@@ -45,10 +45,17 @@ int main( int argc, char** argv ) {
     detection.Load("lbp_face.xml");	
     detection.Init(image.Size());
     
+	
+	double TotalTime = 0.0;
+	for (int i = 0; i < 20; i++) {
+		Detection::Objects objects;
+		TIC(T);
+			detection.Detect(image, objects);
+		TOC(T); TotalTime += TICTOC(T);
+	}
+	
 	Detection::Objects objects;
-	TIC(T);
-		detection.Detect(image, objects);
-	TOC(T);
+	detection.Detect(image, objects);
 	printf("[%s: %i]: Number of faces found: %lu\n",__FNAME__,__LINE__, objects.size());
     for (size_t i = 0; i < objects.size(); ++i) {
 		printf("[%s: %i]: Face at: left: %li, top: %li, right: %li, bottom: %li\n",__FNAME__,__LINE__,
@@ -57,8 +64,8 @@ int main( int argc, char** argv ) {
 			objects[i].rect.right,
 			objects[i].rect.bottom
 		);
-    }    
-	printf("[%s: %i]: Detection Time: %2.3f msec\n",__FNAME__,__LINE__, TICTOC(T));
+    }
+	printf("[%s: %i]: Detection Time: %2.3f msec\n",__FNAME__,__LINE__, TotalTime / 20.0);
 	return 0;
 }
 
